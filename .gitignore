@@ -1,0 +1,37 @@
+# STM32平衡小车项目的.gitignore文件
+
+# 编译输出文件
+*.o
+*.obj
+*.elf
+*.hex
+*.bin
+*.map
+*.lst
+*.crf
+*.d
+*.axf
+
+# Keil项目文件
+*.uvprojx
+*.uvoptx
+*.uvguix.*
+*.sct
+*.htm
+*.dep
+
+# 目录
+DebugConfig/
+Listings/
+Objects/
+
+# 临时文件
+*~
+*.swp
+*.swo
+
+# 其他
+EventRecorderStub.scvd
+
+# 批处理文件（如果不需要版本控制）
+# *.bat
