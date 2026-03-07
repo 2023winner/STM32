@@ -75,6 +75,112 @@
 - **编码器计数**：每转脉冲数根据电机型号而定
 - **速度计算**：使用M法测速，计算周期100ms
 
+## 代码结构
+### 1. 主函数流程
+```c
+int main(void)
+{
+    All_HardWare_init(); // 硬件初始化
+    while (1)
+    {
+        Protect_Check(); // 过倾保护
+        LED_show_working(); // LED状态显示
+        OLED_show_info(); // OLED数据显示
+    }
+}
+```
+
+### 2. 定时器中断（控制核心）
+```c
+void TIM3_IRQHandler(void)
+{
+    if (TIM_GetITStatus(TIM3, TIM_IT_Update) == SET) 
+    {
+        TIM_ClearITPendingBit(TIM3, TIM_IT_Update);              
+        // 姿态解算
+        IMU_Update();
+        // PID控制计算
+        Balance_PID_Result = Position_PID_Cal(&Balance_PID, imu.Roll + 0.3f);
+        if (Time_GAP_20ms) Velocity_PID_Result = Position_PID_Cal(&Velocity_PID, Velocity);
+        
+        // 计算最终控制量
+        PID_Result = Balance_PID_Result + Velocity_PID_Result;
+        // 控制电机
+        Set_Motor_Speed(PID_Result, PID_Result);
+    }
+}
+```
+
+### 3. 姿态解算函数
+```c
+void IMU_Update(void)
+{
+    static float q[4];
+    float Values[6];    
+    Get_IMU_Values(Values);    
+    
+    // 使用DMP进行姿态解算
+    mpu_dmp_get_data(&pitch, &roll, &yaw);
+    
+    // 更新姿态数据
+    imu.Roll = roll;
+    imu.Pitch = pitch;
+    imu.Yaw = yaw;
+}
+```
+
+### 4. PID控制函数
+```c
+float Position_PID_Cal(PID_TypeDef *PID, float Now_Value)
+{
+    PID->Error = PID->Set_Value - Now_Value;
+    PID->Integral += PID->Error;
+    PID->Differential = PID->Error - PID->LastError;
+    PID->LastError = PID->Error;
+    
+    return PID->Kp * PID->Error + PID->Ki * PID->Integral + PID->Kd * PID->Differential;
+}
+```
+
+### 5. 电机控制函数
+```c
+void Set_Motor_Speed(int16_t Left_Speed, int16_t Right_Speed)
+{
+    // 限制速度范围
+    Left_Speed = LIMIT(Left_Speed, -999, 999);
+    Right_Speed = LIMIT(Right_Speed, -999, 999);
+    
+    // 设置电机方向
+    if (Left_Speed >= 0)
+    {
+        MOTOR_L_DIR1 = 1;
+        MOTOR_L_DIR2 = 0;
+    }
+    else
+    {
+        MOTOR_L_DIR1 = 0;
+        MOTOR_L_DIR2 = 1;
+        Left_Speed = -Left_Speed;
+    }
+    
+    if (Right_Speed >= 0)
+    {
+        MOTOR_R_DIR1 = 1;
+        MOTOR_R_DIR2 = 0;
+    }
+    else
+    {
+        MOTOR_R_DIR1 = 0;
+        MOTOR_R_DIR2 = 1;
+        Right_Speed = -Right_Speed;
+    }
+    
+    // 设置PWM占空比
+    TIM_SetCompare1(TIMx, Left_Speed);
+    TIM_SetCompare2(TIMx, Right_Speed);
+}
+```
+
 ## 编译与烧录
 ### 方法一：使用Keil MDK-ARM
 1. 安装Keil MDK-ARM V5.30或更高版本
