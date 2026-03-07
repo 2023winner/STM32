@@ -10,20 +10,6 @@
 - **自定义PCB设计**：基于TPS54335ADDA电源方案，布局合理，性能稳定
 - **模块化设计**：软件采用模块化结构，便于维护和扩展
 
-## 项目图片
-
-### 平衡小车外观
-![平衡小车外观](https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=STM32%20self%20balancing%20car%20with%20OLED%20display%2C%20motors%20with%20encoders%2C%20MPU6050%20sensor%2C%20and%20custom%20PCB%2C%20realistic%20photo&image_size=landscape_16_9)
-
-### PCB板设计
-![PCB板设计](https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=STM32%20balance%20car%20PCB%20design%20with%20TPS54335ADDA%20power%20supply%2C%20TB6612FNG%20motor%20driver%2C%20MPU6050%20sensor%20and%20STM32F103C8T6%20microcontroller%2C%20top%20view%2C%20professional%20PCB%20layout&image_size=square_hd)
-
-### 硬件连接示意图
-![硬件连接示意图](https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=STM32%20balance%20car%20hardware%20connection%20diagram%2C%20showing%20STM32F103C8T6%2C%20MPU6050%2C%20TB6612FNG%20motor%20driver%2C%20OLED%20display%2C%20bluetooth%20module%20and%20power%20supply%2C%20clear%20wiring%20diagram&image_size=landscape_16_9)
-
-### 控制界面
-![控制界面](https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Smartphone%20app%20interface%20for%20controlling%20STM32%20balance%20car%2C%20with%20joystick%20controls%2C%20speed%20indicator%2C%20and%20battery%20status%2C%20modern%20UI%20design&image_size=portrait_16_9)
-
 ## 硬件组成
 - **主控单元**：STM32F103C8T6微控制器（72MHz主频，64KB Flash）
 - **姿态检测**：MPU6050六轴传感器（加速度计+陀螺仪）
@@ -66,7 +52,6 @@
 │   ├── main.c        # 主函数，系统初始化和主循环
 │   ├── stm32f10x_conf.h # 外设配置头文件
 │   ├── stm32f10x_it.c/h # 中断处理函数
-├── Images/           # 项目图片
 ├── .gitignore        # Git忽略文件
 ├── Makefile          # 编译配置
 ├── build_flash.bat   # 编译和烧录脚本
