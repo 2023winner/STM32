@@ -1,297 +1,78 @@
-# STM32平衡小车项目
+# STM32 平衡小车项目
 
-## 项目简介
-这是一个基于STM32F103C8T6微控制器的平衡小车项目，使用MPU6050传感器进行姿态检测，通过PID算法实现小车的平衡控制。项目包含完整的硬件设计和软件代码，是一个集机械、电子、控制于一体的综合性项目。
+基于 STM32F103C8T6 微控制器的平衡小车项目，使用 MPU6050 传感器进行姿态检测，通过 PID 算法实现小车的平衡控制。
 
-## 项目特点
-- **自平衡能力**：通过MPU6050传感器获取姿态数据，使用PID算法实现实时平衡控制
-- **多种控制方式**：支持蓝牙APP、NRF24L01无线模块控制
-- **实时数据显示**：通过OLED屏幕显示姿态数据、速度等信息
-- **自定义PCB设计**：基于TPS54335ADDA电源方案，布局合理，性能稳定
-- **模块化设计**：软件采用模块化结构，便于维护和扩展
+## ✨ 功能特点
 
-## 硬件组成
-- **主控单元**：STM32F103C8T6微控制器（72MHz主频，64KB Flash）
-- **姿态检测**：MPU6050六轴传感器（加速度计+陀螺仪）
-- **驱动系统**：TB6612FNG电机驱动模块 + 带编码器的直流电机
-- **显示系统**：0.96寸OLED显示屏（128x64分辨率）
-- **通信模块**：HC-05蓝牙模块（可选）、NRF24L01无线模块（可选）
-- **电源系统**：12V输入，基于TPS54335ADDA的高效DC-DC降压电路，提供稳定的3.3V和5V电源
+- 🤖 自平衡能力 - 实时 PID 控制
+- 📡 多种控制方式 - 蓝牙/NRF24L01
+- 📱 实时数据显示 - OLED 屏幕
+- 🔧 自定义 PCB 设计 - 稳定可靠
+- 📦 模块化设计 - 易于维护
 
+## 📦 安装
 
-## 硬件设计亮点
-- **电源系统**：采用TPS54335ADDA芯片，提供稳定的3.3V和5V电源
-- **电机驱动**：TB6612FNG芯片，支持正反转、制动和待机功能
-- **传感器布局**：MPU6050传感器安装在小车中心位置，确保姿态检测准确性
-- **PCB设计**：双层板设计，布局合理，信号干扰小
+### 硬件准备
 
-## 软件功能
-- **姿态检测**：使用MPU6050的DMP库进行姿态解算，获取欧拉角
-- **平衡控制**：基于PID算法的闭环控制系统，实现小车自平衡
-- **速度控制**：通过电机编码器反馈，实现速度闭环控制
-- **方向控制**：支持前进、后退、左转、右转等基本动作
-- **数据显示**：OLED实时显示姿态数据、速度、电池电压等信息
-- **通信功能**：支持蓝牙和NRF24L01无线通信
+1. STM32F103C8T6 开发板
+2. MPU6050 传感器
+3. TB6612FNG 电机驱动
+4. OLED 显示屏
+5. 直流电机带编码器
 
-## 项目结构
+### 软件环境
+
+1. 安装 STM32CubeIDE 或 Keil MDK
+2. 安装 Python 3.x（用于上位机）
+3. 安装依赖：
+```bash
+pip install pyserial matplotlib
 ```
-├── Hardware/         # 硬件驱动模块
-│   ├── Mpu6050/      # MPU6050传感器驱动及DMP库
-│   ├── Motor.c/h     # 电机控制和编码器读取
-│   ├── PID.c/h       # PID算法实现
-│   ├── PWM.c/h       # PWM信号生成
-│   ├── OLED.c/h      # OLED显示屏驱动
-│   ├── Blooth.c/h    # 蓝牙通信
-│   ├── NRF24L01.c/h  # NRF24L01无线通信
-│   └── 其他硬件驱动
-├── Library/          # STM32标准库文件
-├── Start/            # 启动文件和系统配置
-├── System/           # 系统相关功能（延时、系统时钟等）
-├── User/             # 用户代码
-│   ├── main.c        # 主函数，系统初始化和主循环
-│   ├── stm32f10x_conf.h # 外设配置头文件
-│   ├── stm32f10x_it.c/h # 中断处理函数
-├── .gitignore        # Git忽略文件
-├── Makefile          # 编译配置
-├── build_flash.bat   # 编译和烧录脚本
-├── project.uvprojx   # Keil项目文件
-└── README.md         # 项目说明
+## 🚀 使用方法
+
+### 烧录固件
+
+1. 使用 ST-Link 连接开发板
+2. 编译项目
+3. 烧录到 STM32
+
+### 上位机使用
+
+```bash
+python 上位机/balance_car_gui.py
 ```
 
-## 核心算法
-### 1. 姿态解算
-- 使用MPU6050的DMP（数字运动处理器）进行姿态解算
-- 融合加速度计和陀螺仪数据，获取稳定的欧拉角
-- 解算频率：100Hz
+### PID 参数调整
 
-### 2. 平衡控制
-- **PID参数**：位置环、速度环双环控制
-- **控制周期**：10ms
-- **调整方法**：先调比例项，再调积分项，最后调微分项
+通过串口发送命令调整 PID 参数：
+```
+Kp:10.5
+Ki:0.1
+Kd:2.0
+```
+## 🛠️ 技术栈
 
-### 3. 电机控制
-- **PWM频率**：10kHz
-- **编码器计数**：每转脉冲数根据电机型号而定
-- **速度计算**：使用M法测速，计算周期100ms
+- C
+- STM32
+- PID Control
+- MPU6050
+- Python
 
-## 代码结构
-### 1. 主函数流程
-```c
-int main(void)
-{
-    All_HardWare_init(); // 硬件初始化
-    while (1)
-    {
-        Protect_Check(); // 过倾保护
-        LED_show_working(); // LED状态显示
-        OLED_show_info(); // OLED数据显示
-    }
-}
+## 📁 目录结构
+
+```
+STM32_Balance_Car/
+├── src/              # 源代码目录
+├── docs/             # 文档目录
+├── tests/            # 测试文件
+├── examples/         # 示例代码
+├── README.md         # 项目说明
+└── .gitignore        # Git 忽略文件
 ```
 
-### 2. 定时器中断（控制核心）
-```c
-void TIM3_IRQHandler(void)
-{
-    if (TIM_GetITStatus(TIM3, TIM_IT_Update) == SET) 
-    {
-        TIM_ClearITPendingBit(TIM3, TIM_IT_Update);              
-        // 姿态解算
-        IMU_Update();
-        // PID控制计算
-        Balance_PID_Result = Position_PID_Cal(&Balance_PID, imu.Roll + 0.3f);
-        if (Time_GAP_20ms) Velocity_PID_Result = Position_PID_Cal(&Velocity_PID, Velocity);
-        
-        // 计算最终控制量
-        PID_Result = Balance_PID_Result + Velocity_PID_Result;
-        // 控制电机
-        Set_Motor_Speed(PID_Result, PID_Result);
-    }
-}
-```
+## ⚠️ 注意事项
 
-### 3. 姿态解算函数
-```c
-void IMU_Update(void)
-{
-    static float q[4];
-    float Values[6];    
-    Get_IMU_Values(Values);    
-    
-    // 使用DMP进行姿态解算
-    mpu_dmp_get_data(&pitch, &roll, &yaw);
-    
-    // 更新姿态数据
-    imu.Roll = roll;
-    imu.Pitch = pitch;
-    imu.Yaw = yaw;
-}
-```
+首次使用请先在安全环境下测试平衡参数。
+## 📄 许可证
 
-### 4. PID控制函数
-```c
-float Position_PID_Cal(PID_TypeDef *PID, float Now_Value)
-{
-    PID->Error = PID->Set_Value - Now_Value;
-    PID->Integral += PID->Error;
-    PID->Differential = PID->Error - PID->LastError;
-    PID->LastError = PID->Error;
-    
-    return PID->Kp * PID->Error + PID->Ki * PID->Integral + PID->Kd * PID->Differential;
-}
-```
-
-### 5. 电机控制函数
-```c
-void Set_Motor_Speed(int16_t Left_Speed, int16_t Right_Speed)
-{
-    // 限制速度范围
-    Left_Speed = LIMIT(Left_Speed, -999, 999);
-    Right_Speed = LIMIT(Right_Speed, -999, 999);
-    
-    // 设置电机方向
-    if (Left_Speed >= 0)
-    {
-        MOTOR_L_DIR1 = 1;
-        MOTOR_L_DIR2 = 0;
-    }
-    else
-    {
-        MOTOR_L_DIR1 = 0;
-        MOTOR_L_DIR2 = 1;
-        Left_Speed = -Left_Speed;
-    }
-    
-    if (Right_Speed >= 0)
-    {
-        MOTOR_R_DIR1 = 1;
-        MOTOR_R_DIR2 = 0;
-    }
-    else
-    {
-        MOTOR_R_DIR1 = 0;
-        MOTOR_R_DIR2 = 1;
-        Right_Speed = -Right_Speed;
-    }
-    
-    // 设置PWM占空比
-    TIM_SetCompare1(TIMx, Left_Speed);
-    TIM_SetCompare2(TIMx, Right_Speed);
-}
-```
-
-## 编译与烧录
-### 方法一：使用Keil MDK-ARM
-1. 安装Keil MDK-ARM V5.30或更高版本
-2. 打开`project.uvprojx`文件
-3. 编译项目生成`balance_car.hex`文件
-4. 使用ST-Link或其他编程器烧录到STM32开发板
-
-### 方法二：使用Makefile
-1. 安装ARM GCC工具链
-2. 打开命令行，进入项目目录
-3. 执行`make`命令编译项目
-4. 执行`make flash`命令烧录到开发板
-
-### 方法三：使用批处理脚本
-1. 确保已安装ST-Link驱动
-2. 双击`build_flash.bat`脚本
-3. 等待编译和烧录完成
-
-## 控制方式
-### 1. 蓝牙APP控制
-- 使用手机蓝牙APP连接HC-05模块
-- 通过APP上的虚拟按键控制小车
-- 支持前进、后退、左转、右转、停止等操作
-
-### 2. NRF24L01无线控制
-- 使用另一块STM32开发板作为遥控器
-- 通过按键发送控制指令
-- 控制距离：约100米（空旷环境）
-
-## 调试与参数调整
-### 1. PID参数调整
-1. 先将积分项和微分项设为0，逐渐增加比例项直到小车开始振荡
-2. 增加微分项以抑制振荡
-3. 增加积分项以消除静态误差
-4. 反复微调直到获得最佳平衡效果
-
-### 2. AI辅助PID调参
-可以使用基于LLM的PID自动调参工具来辅助调参，减少试错过程：
-- [llm-pid-tuner](https://github.com/KINGSTON-115/llm-pid-tuner) - 基于LLM的极简PID自动调参系统
-
-### 3. 姿态校准
-1. 将小车放在水平面上
-2. 重新上电或复位系统
-3. 系统会自动进行姿态校准
-4. 等待OLED显示校准完成
-
-### 4. 常见问题排查
-- **小车无法平衡**：检查MPU6050安装是否水平，调整PID参数
-- **电机不转**：检查电机连接，确认TB6612FNG供电正常
-- **蓝牙连接失败**：检查HC-05模块供电，确认串口波特率设置正确
-- **OLED显示异常**：检查I2C连接，确认OLED供电正常
-
-## 性能指标
-- **平衡精度**：±2°
-- **最大速度**：约1m/s
-- **续航时间**：约30分钟（使用12V锂电池组）
-- **控制响应时间**：<100ms
-
-## 扩展功能
-- [ ] 增加超声波避障功能
-- [ ] 添加红外循迹功能
-- [ ] 实现自动寻路功能
-- [ ] 开发手机APP，增加更多控制功能
-
-## PCB设计
-- **设计软件**：嘉立创EDA
-- **板层**：双层板
-- **尺寸**：根据电机安装孔定制
-- **电源方案**：12V输入，TPS54335ADDA DC-DC降压
-- **特色**：布局合理，信号干扰小，易于安装
-
-## 嘉立创项目链接
-- [32平衡小车（TPS54335ADDA）](https://oshwhub.com/2023asdxc/32-ping-heng-xiao-che-tps54335adda)
-
-## 注意事项
-- **电机要求**：必须使用带编码器的直流电机，单纯的步进电机无法实现该项目
-- **安装注意**：安装电机时请注意安装孔与所购买电机的安装孔是否一致
-- **供电安全**：使用12V电源时，注意不要短路，使用合适的电源适配器
-- **烧录方式**：PCB设计使用STLINK进行烧录
-- **PID调整**：首次使用需要耐心调整PID参数以获得最佳平衡效果
-
-## 硬件清单
-| 部件名称 | 型号/规格 | 数量 | 备注 |
-|---------|-----------|------|------|
-| 主控板 | STM32F103C8T6 | 1 | 最小系统板 |
-| 传感器 | MPU6050 | 1 | 六轴姿态传感器 |
-| 电机驱动 | TB6612FNG | 1 | 双路电机驱动 |
-| 电机 | 带编码器直流电机 | 2 | 推荐转速3000rpm |
-| 显示屏 | 0.96寸OLED | 1 | I2C接口 |
-| 蓝牙模块 | HC-05 | 1 | 可选 |
-| 无线模块 | NRF24L01 | 1 | 可选 |
-| 电源 | 12V电源 | 1 | 推荐使用12V 2A开关电源或锂电池组 |
-| 降压模块 | TPS54335ADDA | 1 | 板载 |
-
-## 软件依赖
-- STM32F10x标准库
-- MPU6050 DMP库
-- OLED驱动库
-
-## 声明
-- MPU6050姿态解算代码来源于网络，如有侵权，请联系我删除
-- 本项目仅供学习参考，请勿用于商业用途
-
-## 许可证
-MIT License
-
-## 贡献
-欢迎提交Issue和Pull Request来改进这个项目！
-
-## 联系方式
-- GitHub: [2023winner](https://github.com/2023winner)
-- 嘉立创: [2023asdxc](https://oshwhub.com/2023asdxc)
-
-## 致谢
-感谢所有为这个项目提供帮助和支持的朋友！
+本项目采用 MIT 许可证 - 详见 LICENSE 文件
